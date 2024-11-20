@@ -163,17 +163,19 @@ func (o *openOptions) Verify() error {
 	}
 
 	if !o.HasDatabaseHost() {
-		if o.DriverName() != DRIVER_SQLITE {
-			return errors.New(`database host is required`)
-		}
 		o.SetDatabaseHost("")
 	}
 
+	if o.DatabaseHost() == "" && o.DriverName() != DRIVER_SQLITE {
+		return errors.New(`database host is required`)
+	}
+
 	if !o.HasDatabasePort() {
-		if o.DriverName() != DRIVER_SQLITE {
-			return errors.New(`database port is required`)
-		}
 		o.SetDatabasePort("")
+	}
+
+	if o.DatabasePort() == "" && o.DriverName() != DRIVER_SQLITE {
+		return errors.New(`database port is required`)
 	}
 
 	if !o.HasUserName() {
