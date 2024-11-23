@@ -2,23 +2,10 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 
 	"github.com/georgysavva/scany/sqlscan"
 	"github.com/gouniverse/maputils"
-)
-
-// Querier is something that we can query and get the *sql.Rows from.
-// For example, it can be: *sql.DB, *sql.Conn or *sql.Tx.
-type Querier interface {
-	QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error)
-}
-
-var (
-	_ Querier = &sql.DB{}
-	_ Querier = &sql.Conn{}
-	_ Querier = &sql.Tx{}
 )
 
 func SelectToMapAny(ctx context.Context, q Querier, sqlStr string, args ...any) ([]map[string]any, error) {

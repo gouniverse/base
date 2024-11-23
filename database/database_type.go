@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"reflect"
 	"strings"
+	"unsafe"
 )
 
 // DatabaseType finds the driver name from database
@@ -24,7 +25,30 @@ import (
 //
 // Returns:
 // - string: the type of the database
-func DatabaseType(db *sql.DB) string {
+func DatabaseType(q Querier) string {
+	var db *sql.DB
+
+	// check if q is sql.DB or sql.Tx or sql.Conn
+	if qdb, ok := q.(*sql.DB); ok {
+		db = qdb
+	}
+
+	if tx, ok := q.(*sql.Tx); ok {
+		v := reflect.ValueOf(tx).Elem()
+		dbField := v.FieldByName("db")
+		dbFieldElem := reflect.NewAt(dbField.Type(), unsafe.Pointer(dbField.UnsafeAddr())).Elem()
+		dbAny := dbFieldElem.Interface()
+		db = dbAny.(*sql.DB)
+	}
+
+	if conn, ok := q.(*sql.Conn); ok {
+		v := reflect.ValueOf(conn).Elem()
+		dbField := v.FieldByName("db")
+		dbFieldElem := reflect.NewAt(dbField.Type(), unsafe.Pointer(dbField.UnsafeAddr())).Elem()
+		dbAny := dbFieldElem.Interface()
+		db = dbAny.(*sql.DB)
+	}
+
 	driverFullName := reflect.ValueOf(db.Driver()).Type().String()
 
 	if strings.Contains(driverFullName, DATABASE_TYPE_MYSQL) {
