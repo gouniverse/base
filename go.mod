@@ -2,7 +2,11 @@ module github.com/gouniverse/base
 
 go 1.23.1
 
-require modernc.org/sqlite v1.34.1
+require (
+	github.com/georgysavva/scany v1.2.2
+	github.com/gouniverse/maputils v0.7.0
+	modernc.org/sqlite v1.34.1
+)
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
