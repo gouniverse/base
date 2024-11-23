@@ -11,7 +11,7 @@ import (
 
 func TestOpenWithUnsupportedDriver(t *testing.T) {
 	db, err := Open(Options().
-		SetDriverName("unsupported_driver").
+		SetDatabaseType("unsupported_driver").
 		SetDatabaseHost("").
 		SetDatabasePort("").
 		SetDatabaseName(":memory:").
@@ -33,7 +33,7 @@ func TestOpenWithUnsupportedDriver(t *testing.T) {
 
 func TestOpen(t *testing.T) {
 	db, err := Open(Options().
-		SetDriverName(DRIVER_SQLITE).
+		SetDatabaseType(DATABASE_TYPE_SQLITE).
 		SetDatabaseHost("").
 		SetDatabasePort("").
 		SetDatabaseName(":memory:").
@@ -51,7 +51,7 @@ func TestOpen(t *testing.T) {
 
 func TestOpenDatabseIsRequired(t *testing.T) {
 	db, err := Open(Options().
-		SetDriverName(DRIVER_SQLITE).
+		SetDatabaseType(DATABASE_TYPE_SQLITE).
 		SetDatabaseHost("").
 		SetDatabasePort("").
 		SetUserName("").
@@ -72,7 +72,7 @@ func TestOpenDatabseIsRequired(t *testing.T) {
 
 func TestOpenHostIsRequired(t *testing.T) {
 	db, err := Open(Options().
-		SetDriverName(DRIVER_MYSQL).
+		SetDatabaseType(DATABASE_TYPE_SQLITE).
 		SetDatabaseHost("").
 		SetDatabasePort("").
 		SetDatabaseName(":memory:").
@@ -94,7 +94,7 @@ func TestOpenHostIsRequired(t *testing.T) {
 
 func TestOpenPortIsRequired(t *testing.T) {
 	db, err := Open(Options().
-		SetDriverName(DRIVER_MYSQL).
+		SetDatabaseType(DATABASE_TYPE_SQLITE).
 		SetDatabaseHost("localhost").
 		SetDatabasePort("").
 		SetDatabaseName(":memory:").

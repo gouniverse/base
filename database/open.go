@@ -47,7 +47,7 @@ func Open(options openOptionsInterface) (*sql.DB, error) {
 		return nil, err
 	}
 
-	driver := options.DriverName()
+	databaseType := options.DatabaseType()
 	host := options.DatabaseHost()
 	port := options.DatabasePort()
 	databaseName := options.DatabaseName()
@@ -56,19 +56,19 @@ func Open(options openOptionsInterface) (*sql.DB, error) {
 	timezone := options.TimeZone()
 	charset := options.Charset()
 
-	dsn := dsn(driver, databaseName, user, pass, host, port, timezone, charset)
+	dsn := dsn(databaseType, databaseName, user, pass, host, port, timezone, charset)
 
-	db, err = sql.Open(driver, dsn)
+	db, err = sql.Open(databaseType, dsn)
 
 	if err != nil {
 		return nil, err
 	}
 
 	if db == nil {
-		return nil, errors.New("database for driver " + driver + " could not be intialized")
+		return nil, errors.New("database for driver " + databaseType + " could not be intialized")
 	}
 
-	if driver == DRIVER_MYSQL || driver == DRIVER_POSTGRES {
+	if databaseType == DATABASE_TYPE_MYSQL || databaseType == DATABASE_TYPE_POSTGRES {
 		// Maximum Idle Connections
 		db.SetMaxIdleConns(5)
 		// Maximum Open Connections
@@ -82,7 +82,7 @@ func Open(options openOptionsInterface) (*sql.DB, error) {
 	err = db.Ping()
 
 	if err != nil {
-		return nil, errors.Join(errors.New("database for driver "+driver+" could not be pinged"), err)
+		return nil, errors.Join(errors.New("database for driver "+databaseType+" could not be pinged"), err)
 	}
 
 	return db, nil
@@ -98,11 +98,11 @@ func dsn(
 	timezone string,
 	charset string,
 ) string {
-	if strings.EqualFold(driver, DRIVER_SQLITE) {
+	if strings.EqualFold(driver, DATABASE_TYPE_SQLITE) {
 		return databaseName
 	}
 
-	if strings.EqualFold(driver, DRIVER_MYSQL) {
+	if strings.EqualFold(driver, DATABASE_TYPE_MYSQL) {
 		dsn := user + `:` + pass
 		dsn += `@tcp(` + host + `:` + port + `)/` + databaseName
 		dsn += `?charset=` + charset
@@ -111,7 +111,7 @@ func dsn(
 		return dsn
 	}
 
-	if strings.EqualFold(driver, DRIVER_POSTGRES) {
+	if strings.EqualFold(driver, DATABASE_TYPE_POSTGRES) {
 		dsn := `host=` + host
 		dsn += ` user=` + user
 		dsn += ` password=` + pass
@@ -136,20 +136,20 @@ type openOptions struct {
 }
 
 func (o *openOptions) Verify() error {
-	if !o.HasDriverName() {
-		return errors.New(`driver is required`)
+	if !o.HasDatabaseType() {
+		return errors.New(`database type is required`)
 	}
 
-	if o.DriverName() == "" {
-		return errors.New(`driver cannot be empty`)
+	if o.DatabaseType() == "" {
+		return errors.New(`database type cannot be empty`)
 	}
 
-	supportedDrivers := []string{DRIVER_SQLITE, DRIVER_MYSQL, DRIVER_POSTGRES}
+	supportedDrivers := []string{DATABASE_TYPE_SQLITE, DATABASE_TYPE_MYSQL, DATABASE_TYPE_POSTGRES}
 
-	if !strings.EqualFold(o.DriverName(), DRIVER_SQLITE) &&
-		!strings.EqualFold(o.DriverName(), DRIVER_MYSQL) &&
-		!strings.EqualFold(o.DriverName(), DRIVER_POSTGRES) {
-		msg := `driver ` + o.DriverName() + ` is not supported.`
+	if !strings.EqualFold(o.DatabaseType(), DATABASE_TYPE_SQLITE) &&
+		!strings.EqualFold(o.DatabaseType(), DATABASE_TYPE_MYSQL) &&
+		!strings.EqualFold(o.DatabaseType(), DATABASE_TYPE_POSTGRES) {
+		msg := `driver ` + o.DatabaseType() + ` is not supported.`
 		msg += ` Supported drivers: ` + strings.Join(supportedDrivers, ", ")
 		return errors.New(msg)
 	}
@@ -166,7 +166,7 @@ func (o *openOptions) Verify() error {
 		o.SetDatabaseHost("")
 	}
 
-	if o.DatabaseHost() == "" && o.DriverName() != DRIVER_SQLITE {
+	if o.DatabaseHost() == "" && o.DatabaseType() != DATABASE_TYPE_SQLITE {
 		return errors.New(`database host is required`)
 	}
 
@@ -174,7 +174,7 @@ func (o *openOptions) Verify() error {
 		o.SetDatabasePort("")
 	}
 
-	if o.DatabasePort() == "" && o.DriverName() != DRIVER_SQLITE {
+	if o.DatabasePort() == "" && o.DatabaseType() != DATABASE_TYPE_SQLITE {
 		return errors.New(`database port is required`)
 	}
 
@@ -191,7 +191,7 @@ func (o *openOptions) Verify() error {
 	}
 
 	if !o.HasCharset() {
-		if o.DriverName() == DRIVER_MYSQL {
+		if o.DatabaseType() == DATABASE_TYPE_MYSQL {
 			o.SetCharset("utf8mb4")
 		} else {
 			o.SetCharset("")
@@ -201,16 +201,16 @@ func (o *openOptions) Verify() error {
 	return nil
 }
 
-func (o *openOptions) DriverName() string {
-	return o.get("driver_name").(string)
+func (o *openOptions) DatabaseType() string {
+	return o.get("database_type").(string)
 }
 
-func (o *openOptions) HasDriverName() bool {
-	return o.has("driver_name")
+func (o *openOptions) HasDatabaseType() bool {
+	return o.has("database_type")
 }
 
-func (o *openOptions) SetDriverName(driverName string) openOptionsInterface {
-	o.set("driver_name", driverName)
+func (o *openOptions) SetDatabaseType(databaseType string) openOptionsInterface {
+	o.set("database_type", databaseType)
 	return o
 }
 
@@ -326,9 +326,9 @@ func (o *openOptions) get(key string) interface{} {
 // }
 
 type openOptionsInterface interface {
-	DriverName() string
-	HasDriverName() bool
-	SetDriverName(string) openOptionsInterface
+	DatabaseType() string
+	HasDatabaseType() bool
+	SetDatabaseType(string) openOptionsInterface
 	DatabaseHost() string
 	HasDatabaseHost() bool
 	SetDatabaseHost(string) openOptionsInterface
