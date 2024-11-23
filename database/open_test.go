@@ -72,7 +72,7 @@ func TestOpenDatabseIsRequired(t *testing.T) {
 
 func TestOpenHostIsRequired(t *testing.T) {
 	db, err := Open(Options().
-		SetDatabaseType(DATABASE_TYPE_SQLITE).
+		SetDatabaseType(DATABASE_TYPE_MYSQL).
 		SetDatabaseHost("").
 		SetDatabasePort("").
 		SetDatabaseName(":memory:").
@@ -94,7 +94,7 @@ func TestOpenHostIsRequired(t *testing.T) {
 
 func TestOpenPortIsRequired(t *testing.T) {
 	db, err := Open(Options().
-		SetDatabaseType(DATABASE_TYPE_SQLITE).
+		SetDatabaseType(DATABASE_TYPE_MYSQL).
 		SetDatabaseHost("localhost").
 		SetDatabasePort("").
 		SetDatabaseName(":memory:").
