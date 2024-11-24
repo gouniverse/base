@@ -8,7 +8,7 @@ import (
 	"github.com/gouniverse/maputils"
 )
 
-func SelectToMapAny(ctx context.Context, q Querier, sqlStr string, args ...any) ([]map[string]any, error) {
+func SelectToMapAny(ctx context.Context, q Queryable, sqlStr string, args ...any) ([]map[string]any, error) {
 	if q == nil {
 		return []map[string]any{}, errors.New("querier (db/tx/conn) is nil")
 	}
@@ -28,7 +28,7 @@ func SelectToMapAny(ctx context.Context, q Querier, sqlStr string, args ...any) 
 	return listMap, nil
 }
 
-func SelectToMapString(ctx context.Context, q Querier, sqlStr string, args ...any) ([]map[string]string, error) {
+func SelectToMapString(ctx context.Context, q Queryable, sqlStr string, args ...any) ([]map[string]string, error) {
 	if q == nil {
 		return []map[string]string{}, errors.New("querier (db/tx/conn) is nil")
 	}
