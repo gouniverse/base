@@ -50,10 +50,16 @@ func Context(ctx context.Context, queryable QueryableInterface) QueryableContext
 	return NewQueryableContext(ctx, queryable)
 }
 
+func IsQueryableContext(ctx context.Context) bool {
+	return ctx != nil && ctx.Value("queryable") != nil
+}
+
 // NewQueryableContext returns a new context with the given QueryableInterface.
 func NewQueryableContext(ctx context.Context, queryable QueryableInterface) QueryableContext {
 	return QueryableContext{Context: ctx, queryable: queryable}
 }
+
+var _ context.Context = QueryableContext{}
 
 // TransactionContext is a context that contains a transaction.
 type QueryableContext struct {
@@ -61,8 +67,36 @@ type QueryableContext struct {
 	queryable QueryableInterface
 }
 
-var _ context.Context = QueryableContext{}
+func (ctx QueryableContext) IsDB() bool {
+	if ctx.queryable == nil {
+		return false
+	}
 
-func IsQueryableContext(ctx context.Context) bool {
-	return ctx != nil && ctx.Value("queryable") != nil
+	_, ok := ctx.queryable.(*sql.DB)
+
+	return ok
+}
+
+func (ctx QueryableContext) IsConn() bool {
+	if ctx.queryable == nil {
+		return false
+	}
+
+	_, ok := ctx.queryable.(*sql.Conn)
+
+	return ok
+}
+
+func (ctx QueryableContext) IsTx() bool {
+	if ctx.queryable == nil {
+		return false
+	}
+
+	_, ok := ctx.queryable.(*sql.Tx)
+
+	return ok
+}
+
+func (ctx QueryableContext) Queryable() QueryableInterface {
+	return ctx.queryable
 }
