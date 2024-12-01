@@ -20,6 +20,14 @@ func TestSelectToMapAny(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// Test nil querier error
+	_, err = SelectToMapAny(Context(context.Background(), nil), "SELECT * FROM users")
+	if err == nil {
+		t.Error("Expected error for nil querier")
+	} else if err.Error() != "querier (db/tx/conn) is nil" {
+		t.Errorf("Unexpected error message: %v", err)
+	}
+
 	// Test successful query
 	result, err := SelectToMapAny(Context(context.Background(), db), "SELECT * FROM users ORDER BY id ASC")
 	if err != nil {
@@ -74,6 +82,14 @@ func TestSelectToMapString(t *testing.T) {
 	err = createUserTableAndInserTesttData(db)
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	// Test nil querier error
+	_, err = SelectToMapString(Context(context.Background(), nil), "SELECT * FROM users")
+	if err == nil {
+		t.Error("Expected error for nil querier")
+	} else if err.Error() != "querier (db/tx/conn) is nil" {
+		t.Errorf("Unexpected error message: %v", err)
 	}
 
 	// Test successful query
