@@ -25,7 +25,7 @@ import (
 //
 // Returns:
 // - string: the type of the database
-func DatabaseType(q Queryable) string {
+func DatabaseType(q QueryableInterface) string {
 	var db *sql.DB
 
 	// check if q is sql.DB or sql.Tx or sql.Conn

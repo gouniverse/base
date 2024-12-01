@@ -1,21 +1,20 @@
 package database
 
 import (
-	"context"
 	"errors"
 
 	"github.com/georgysavva/scany/sqlscan"
 	"github.com/gouniverse/maputils"
 )
 
-func SelectToMapAny(ctx context.Context, q Queryable, sqlStr string, args ...any) ([]map[string]any, error) {
-	if q == nil {
+func SelectToMapAny(ctx QueryableContext, sqlStr string, args ...any) ([]map[string]any, error) {
+	if ctx.queryable == nil {
 		return []map[string]any{}, errors.New("querier (db/tx/conn) is nil")
 	}
 
 	listMap := []map[string]any{}
 
-	err := sqlscan.Select(ctx, q, &listMap, sqlStr, args...)
+	err := sqlscan.Select(ctx, ctx.queryable, &listMap, sqlStr, args...)
 
 	if err != nil {
 		if sqlscan.NotFound(err) {
@@ -28,12 +27,12 @@ func SelectToMapAny(ctx context.Context, q Queryable, sqlStr string, args ...any
 	return listMap, nil
 }
 
-func SelectToMapString(ctx context.Context, q Queryable, sqlStr string, args ...any) ([]map[string]string, error) {
-	if q == nil {
+func SelectToMapString(ctx QueryableContext, sqlStr string, args ...any) ([]map[string]string, error) {
+	if ctx.queryable == nil {
 		return []map[string]string{}, errors.New("querier (db/tx/conn) is nil")
 	}
 
-	listMapAny, err := SelectToMapAny(ctx, q, sqlStr, args...)
+	listMapAny, err := SelectToMapAny(ctx, sqlStr, args...)
 
 	if err != nil {
 		return []map[string]string{}, err

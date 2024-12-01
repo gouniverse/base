@@ -15,7 +15,7 @@ import (
 //
 // Implementations of this interface provide a way to execute queries in a context,
 // allowing for cancellation and timeout control.
-type Queryable interface {
+type QueryableInterface interface {
 	// ExecContext executes a SQL query in the given context.
 	// It returns a sql.Result object containing information about the execution,
 	// or an error if the query failed.
@@ -40,7 +40,29 @@ type Queryable interface {
 }
 
 var (
-	_ Queryable = &sql.DB{}
-	_ Queryable = &sql.Conn{}
-	_ Queryable = &sql.Tx{}
+	_ QueryableInterface = &sql.DB{}
+	_ QueryableInterface = &sql.Conn{}
+	_ QueryableInterface = &sql.Tx{}
 )
+
+// Context returns a new context with the given QueryableInterface.
+func Context(ctx context.Context, queryable QueryableInterface) QueryableContext {
+	return NewQueryableContext(ctx, queryable)
+}
+
+// NewQueryableContext returns a new context with the given QueryableInterface.
+func NewQueryableContext(ctx context.Context, queryable QueryableInterface) QueryableContext {
+	return QueryableContext{Context: ctx, queryable: queryable}
+}
+
+// TransactionContext is a context that contains a transaction.
+type QueryableContext struct {
+	context.Context
+	queryable QueryableInterface
+}
+
+var _ context.Context = QueryableContext{}
+
+func IsQueryableContext(ctx context.Context) bool {
+	return ctx != nil && ctx.Value("queryable") != nil
+}
