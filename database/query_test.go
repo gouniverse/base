@@ -10,7 +10,12 @@ func TestQuery(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	err = createUserTableAndInserTesttData(db)
 	if err != nil {
@@ -19,6 +24,7 @@ func TestQuery(t *testing.T) {
 
 	// Test nil querier error
 	_, err = Query(Context(context.Background(), nil), "SELECT * FROM users")
+
 	if err == nil {
 		t.Error("Expected error for nil querier")
 	} else if err.Error() != "querier (db/tx/conn) is nil" {
@@ -27,10 +33,16 @@ func TestQuery(t *testing.T) {
 
 	// Test successful query
 	rows, err := Query(Context(context.Background(), db), "SELECT * FROM users")
+
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
-	defer rows.Close()
+
+	defer func() {
+		if err := rows.Close(); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	// Iterate over rows and check data
 	for rows.Next() {
@@ -53,7 +65,12 @@ func TestQuery(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
-	defer rows.Close()
+
+	defer func() {
+		if err := rows.Close(); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	if rows.Next() {
 		t.Error("Expected no rows, but got one")

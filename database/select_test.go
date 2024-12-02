@@ -13,7 +13,11 @@ func TestSelectToMapAny(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() {
+		if err := db.Close(); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	err = createUserTableAndInserTesttData(db)
 	if err != nil {
@@ -77,7 +81,11 @@ func TestSelectToMapString(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() {
+		if err := db.Close(); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	err = createUserTableAndInserTesttData(db)
 	if err != nil {
@@ -147,8 +155,10 @@ func createUserTableAndInserTesttData(db QueryableInterface) error {
 
 	// Insert some test data
 	_, err = db.ExecContext(context.Background(), sql)
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

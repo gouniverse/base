@@ -25,6 +25,8 @@ import (
 //
 // Returns:
 // - string: the type of the database
+//
+// #nosec G103 - we use unsafe deliberately to get private fields of sql.Tx and sql.Conn
 func DatabaseType(q QueryableInterface) string {
 	var db *sql.DB
 
@@ -33,6 +35,7 @@ func DatabaseType(q QueryableInterface) string {
 		db = qdb
 	}
 
+	// check if q is sql.Tx and get db (uses reflection, because it is private)
 	if tx, ok := q.(*sql.Tx); ok {
 		v := reflect.ValueOf(tx).Elem()
 		dbField := v.FieldByName("db")
@@ -41,6 +44,7 @@ func DatabaseType(q QueryableInterface) string {
 		db = dbAny.(*sql.DB)
 	}
 
+	// check if q is sql.Conn, and get db (uses reflection, because it is private)
 	if conn, ok := q.(*sql.Conn); ok {
 		v := reflect.ValueOf(conn).Elem()
 		dbField := v.FieldByName("db")

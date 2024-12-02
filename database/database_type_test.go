@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"testing"
 
 	_ "modernc.org/sqlite"
@@ -20,6 +21,10 @@ func initSqliteDB() (*sql.DB, error) {
 
 	if err != nil {
 		return nil, err
+	}
+
+	if db == nil {
+		return nil, errors.New("db is nil")
 	}
 
 	return db, nil

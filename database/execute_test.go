@@ -7,10 +7,16 @@ import (
 
 func TestExecute(t *testing.T) {
 	db, err := initSqliteDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	// Test nil querier error
 	_, err = Execute(Context(context.Background(), nil), "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)")
