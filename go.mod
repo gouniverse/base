@@ -5,7 +5,15 @@ go 1.23.1
 require (
 	github.com/georgysavva/scany v1.2.2
 	github.com/gouniverse/maputils v0.7.0
+	github.com/samber/lo v1.47.0
 	modernc.org/sqlite v1.34.1
+)
+
+require (
+	github.com/rogpeppe/go-internal v1.13.1 // indirect
+	github.com/stretchr/testify v1.9.0 // indirect
+	golang.org/x/crypto v0.29.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
 )
 
 require (
