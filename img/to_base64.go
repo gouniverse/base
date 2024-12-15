@@ -5,7 +5,8 @@ import (
 	"net/http"
 )
 
-func ToBase64String(imgBytes []byte) string {
+// ToBase64Url converts a byte slice to Base64 encoded URL string
+func ToBase64Url(imgBytes []byte) string {
 	mimeType := http.DetectContentType(imgBytes)
 
 	base64Encoding := ""
@@ -25,12 +26,10 @@ func ToBase64String(imgBytes []byte) string {
 		base64Encoding += "data:image/webp;base64,"
 	}
 
-	// result := tpl.String()
 	base64Encoding += base64Encode(imgBytes)
 	return base64Encoding
 }
 
 func base64Encode(src []byte) string {
 	return base64.RawStdEncoding.EncodeToString(src)
-	// return base64.URLEncoding.EncodeToString(src)
 }
