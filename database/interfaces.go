@@ -24,6 +24,18 @@ type QueryableInterface interface {
 	// cancellation and timeout control.
 	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
 
+	// PrepareContext creates a prepared statement for use within a transaction.
+	//
+	// The returned statement operates within the transaction and will be closed
+	// when the transaction has been committed or rolled back.
+	//
+	// To use an existing prepared statement on this transaction, see [Tx.Stmt].
+	//
+	// The provided context will be used for the preparation of the context, not
+	// for the execution of the returned statement. The returned statement
+	// will run in the transaction context.
+	PrepareContext(ctx context.Context, query string) (*sql.Stmt, error)
+
 	// QueryContext executes a SQL query in the given context and returns a
 	// *sql.Rows object containing the query results.
 	//
