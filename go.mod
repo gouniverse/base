@@ -21,6 +21,7 @@ require (
 require (
 	github.com/boombuler/barcode v1.0.2
 	github.com/disintegration/imaging v1.6.2
+	github.com/dromara/carbon/v2 v2.5.2
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
