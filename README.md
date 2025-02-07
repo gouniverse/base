@@ -6,9 +6,10 @@
 
 ## License
 
-This project is licensed under the GNU General Public License version 3 (GPL-3.0). You can find a copy of the license at https://www.gnu.org/licenses/gpl-3.0.en.html
+This project is dual-licensed under the following terms:
 
-For commercial use, please use my [contact page](https://lesichkov.co.uk/contact) to obtain a commercial license.
+- For non-commercial use, you may choose either the GNU Affero General Public License v3.0 *or* a separate commercial license. You can find a copy of the AGPLv3 at: https://www.gnu.org/licenses/agpl-3.0.txt
+- For commercial use, a separate commercial license is required. Commercial licenses are available for various use cases. Please contact me via my [contact page](https://lesichkov.co.uk/contact) to obtain a commercial license.
 
 ## Installation
 
