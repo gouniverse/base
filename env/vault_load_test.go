@@ -7,17 +7,22 @@ import (
 	"github.com/gouniverse/envenc"
 )
 
-func TestEnvEncInitialize(t *testing.T) {
+func TestVaultLoad(t *testing.T) {
 	password := "password%%1234567890"
 
-	// Create a temporary .env file
+	// Create a temporary .vault file, so that we can use the name later
 	tempFile, err := os.CreateTemp("", "test.vault")
 	if err != nil {
 		t.Fatalf("Error creating temporary file: %v", err)
 	}
-	t.Log(tempFile.Name())
-	defer tempFile.Close()
-	os.Remove(tempFile.Name())
+	tempFile.Close()
+
+	// Remove the temporary .vault file, so that we can use the same path later
+	err = os.Remove(tempFile.Name())
+
+	if err != nil {
+		t.Fatalf("Error removing temporary file: %v", err)
+	}
 
 	err = envenc.Init(tempFile.Name(), password)
 
@@ -34,7 +39,7 @@ func TestEnvEncInitialize(t *testing.T) {
 	}
 
 	// Call the EnvInitialize function
-	EnvEncInitialize(struct {
+	VaultLoad(struct {
 		Password      string
 		VaultFilePath string
 		VaultContent  string

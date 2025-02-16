@@ -18,9 +18,10 @@ func TestFileExists(t *testing.T) {
 
 	os.Create(filePath)
 
-	if fileExists(filePath) == false {
+	if !fileExists(filePath) {
 		t.Error("File DOES NOT exist")
 	}
 
+	os.Remove(filePath)
 	defer os.Remove(filePath)
 }
