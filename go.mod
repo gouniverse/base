@@ -22,10 +22,9 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mingrammer/cfmt v1.1.0 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
-	github.com/stretchr/testify v1.10.0 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	golang.org/x/image v0.23.0 // indirect
-	golang.org/x/net v0.30.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/term v0.27.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 )
