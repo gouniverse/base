@@ -44,6 +44,6 @@ func TestEnvEncInitialize(t *testing.T) {
 
 	// Assert that the environment variable was loaded
 	if os.Getenv("TEST_VAULT_VAR") != "test_vault_value" {
-		t.Errorf("Expected TEST_VAR to be 'test_value', but got '%s'", os.Getenv("TEST_VAR"))
+		t.Errorf("Expected TEST_VAULT_VAR to be 'test_vault_value', but got '%s'", os.Getenv("TEST_VAULT_VAR"))
 	}
 }
