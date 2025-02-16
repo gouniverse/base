@@ -15,6 +15,7 @@ func TestEnvEncInitialize(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating temporary file: %v", err)
 	}
+	t.Log(tempFile.Name())
 	defer tempFile.Close()
 	os.Remove(tempFile.Name())
 
