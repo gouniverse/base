@@ -3,7 +3,6 @@ package database
 import (
 	"errors"
 
-	"github.com/georgysavva/scany/sqlscan"
 	"github.com/gouniverse/maputils"
 )
 
@@ -14,13 +13,22 @@ func SelectToMapAny(ctx QueryableContext, sqlStr string, args ...any) ([]map[str
 
 	listMap := []map[string]any{}
 
-	err := sqlscan.Select(ctx, ctx.queryable, &listMap, sqlStr, args...)
+	rows, err := ctx.queryable.QueryContext(ctx, sqlStr, args...)
 
 	if err != nil {
-		if sqlscan.NotFound(err) {
-			return []map[string]any{}, nil
-		}
+		return []map[string]any{}, err
+	}
 
+	for rows.Next() {
+		var row map[string]any
+		err := rows.Scan(&row)
+		if err != nil {
+			return []map[string]any{}, err
+		}
+		listMap = append(listMap, row)
+	}
+
+	if err := rows.Err(); err != nil {
 		return []map[string]any{}, err
 	}
 
